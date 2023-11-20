@@ -7,6 +7,7 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"start": "node build",
+		"docker:build": "docker buildx build --platform=linux/amd64,linux/arm64/v8 -t coldino/asb-export-server --push .",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
