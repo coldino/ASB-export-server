@@ -44,13 +44,13 @@ export const PUT: RequestHandler = async (event) => {
 
     // Don't go any further if the connection is not active
     if (!isConnected(token)) {
-        throw error(504, 'No export receiver connected');
+        throw error(424, 'No export receiver connected');
     }
 
     // Decode the request body
     const data = await request.json();
 
-    // Ensure it looks a bit like an export file
+    // Ensure it looks enough like a server file
     if (!isValidServer(data)) {
         throw error(400, 'Invalid data');
     }

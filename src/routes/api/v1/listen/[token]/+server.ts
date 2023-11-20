@@ -64,7 +64,9 @@ export const GET: RequestHandler = async (event) => {
             // Denotes the response as SSE
             'Content-Type': 'text/event-stream',
             // Optional. Request the GET request not to be cached.
-            'Cache-Control': 'no-cache',
+            'Cache-Control': 'no-cache no-store no-transform',
+
+            'Connection': 'keep-alive',
         }
     });
 };
