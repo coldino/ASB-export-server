@@ -8,7 +8,7 @@ import { isServerLimited } from '$lib/server/rates';
 import { isHashValid, isTokenValid, isValidServer } from '$lib/validate';
 
 
-export const POST: RequestHandler = async (event) => {
+export const PUT: RequestHandler = async (event) => {
     const { params, request } = event;
 
     // Get the token and perform simple validation

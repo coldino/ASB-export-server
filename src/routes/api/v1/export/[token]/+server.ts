@@ -8,7 +8,7 @@ import { isTokenValid, isValidExport } from '$lib/validate';
 import { isExportLimited } from '$lib/server/rates';
 
 
-export const POST: RequestHandler = async (event) => {
+export const PUT: RequestHandler = async (event) => {
     const { params, request } = event;
 
     // Get the token and perform simple validation

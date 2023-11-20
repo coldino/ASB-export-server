@@ -1,0 +1,8 @@
+/*
+!/src
+!/static
+!tsconfig.json
+!package.json
+!pnpm-lock.yaml
+!svelte.config.js
+!vite.config.ts

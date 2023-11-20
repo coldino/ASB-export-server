@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  asb-export-server:
+    container_name: asb-export-server
+    image: coldino/asb-export-server:latest
+    restart: unless-stopped
+    ports:
+      - 4173:4173
+    environment:
+      HOST: 0.0.0.0
+      PORT: 4173
+      ORIGIN: "http://localhost:4173"
+

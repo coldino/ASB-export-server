@@ -1,38 +1,39 @@
-# create-svelte
+# ASB Export Server
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Forwards Ark dino exports from consoles to ASB on the desktop
 
-## Creating a project
+## Overview
 
-If you're seeing this, you've probably already done this step. Congrats!
+This is a very simple server that allows ASB to listen for export and server data files sent from the ASB Export Gun mod. No data is stored, ever.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Dev
 
-# create a new project in my-app
-npm create svelte@latest my-app
+This is a SvekteKit app with no real UI to speak of, and just a couple of API routes.
+```
+pnpm i
+pnpm dev
 ```
 
-## Developing
+## Variables
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+There are a few variables controlling some of the server limitations:
+```
+# Example .env file
+MAX_EXPORT_SIZE=4096    # Max size of allowed Ark dino export files
+MAX_SERVER_SIZE=2048    # Max size of allowed Ark server multiplier files
+MAX_CONNECTIONS=1000    # Max number of concurrent listener connections
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# @sveltejs/adapter-node
+BODY_SIZE_LIMIT=8192    # Max size of any request body
 ```
 
-## Building
+## Build
 
-To create a production version of your app:
-
-```bash
-npm run build
+Optional, if you don't have a multi-arch builder:
+```
+docker buildx create --name multiarch --use
 ```
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+```
+docker buildx build --platform=linux/amd64,linux/arm64/v8 -t coldino/asb-export-server --push .
+```
