@@ -18,7 +18,7 @@
 	<!-- Content -->
 	<div class="container mx-auto">
 		<header class="mx-6 sm:mx-20 pt-20 z-10">
-			<h1 class="text-24pt sm:text-36pt font-bold sansation font-bold">Ark Smark Breeding</h1>
+			<h1 class="text-24pt sm:text-36pt font-bold sansation font-bold">Ark Smart Breeding</h1>
 			<h1 class="text-24pt sm:text-32pt font-bold gobold">EXPORT SERVER</h1>
 			<h2 class="mt-4 mr-10 text-14pt sm:text-16pt max-w-160 balance sansation">
 				This server allows dino exports to be sent from
