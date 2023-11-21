@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>ASB Export Server for ARK: Survival Ascended</title>
+</svelte:head>
+
 <div class="grad h-100vh h-100svh">
 	<!-- Top-right corner -->
 	<div class="corner tr bg-#37423D absolute top-0 right-0 w-20 sm:w-50 h-50 sm:h-80">
