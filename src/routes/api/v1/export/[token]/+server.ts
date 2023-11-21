@@ -8,7 +8,7 @@ import { isTokenValid, isValidExport } from '$lib/validate';
 import { isExportLimited } from '$lib/server/rates';
 
 
-export const PUT: RequestHandler = async (event) => {
+const handler: RequestHandler = async (event) => {
     const { params, request } = event;
 
     // Get the token and perform simple validation
@@ -20,11 +20,6 @@ export const PUT: RequestHandler = async (event) => {
     // Apply the rate limiter
     if (await isExportLimited(event)) {
         throw error(429, 'Too many requests');
-    }
-
-    // Ensure the request is JSON
-    if (!request.headers.get('content-type')?.includes('application/json')) {
-        throw error(400, 'Expected JSON request body');
     }
 
     // Ensure there's a content length header and that it is not too large
@@ -43,7 +38,12 @@ export const PUT: RequestHandler = async (event) => {
     }
 
     // Decode the request body
-    const data = await request.json();
+    let data: unknown;
+    try {
+        data = await request.json();
+    } catch (e) {
+        throw error(400, 'Invalid data');
+    }
 
     // Ensure it looks enough like an export file
     if (!isValidExport(data)) {
@@ -54,4 +54,7 @@ export const PUT: RequestHandler = async (event) => {
     sendData(token, "export", data);
 
     return new Response();
-};
+}
+
+export const PUT: RequestHandler = handler;
+export const POST: RequestHandler = handler;

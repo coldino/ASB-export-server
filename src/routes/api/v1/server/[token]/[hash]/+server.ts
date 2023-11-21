@@ -8,7 +8,7 @@ import { isServerLimited } from '$lib/server/rates';
 import { isHashValid, isTokenValid, isValidServer } from '$lib/validate';
 
 
-export const PUT: RequestHandler = async (event) => {
+const handler: RequestHandler = async (event) => {
     const { params, request } = event;
 
     // Get the token and perform simple validation
@@ -27,11 +27,6 @@ export const PUT: RequestHandler = async (event) => {
         throw error(429, 'Too many requests');
     }
 
-    // Ensure the request is JSON
-    if (!request.headers.get('content-type')?.includes('application/json')) {
-        throw error(400, 'Expected JSON request body');
-    }
-
     // Ensure there's a content length header and that it is not too large
     const contentLength = request.headers.get('content-length');
     if (!contentLength) {
@@ -48,7 +43,12 @@ export const PUT: RequestHandler = async (event) => {
     }
 
     // Decode the request body
-    const data = await request.json();
+    let data: unknown;
+    try {
+        data = await request.json();
+    } catch (e) {
+        throw error(400, 'Invalid data');
+    }
 
     // Ensure it looks enough like a server file
     if (!isValidServer(data)) {
@@ -60,3 +60,6 @@ export const PUT: RequestHandler = async (event) => {
 
     return new Response();
 };
+
+export const PUT: RequestHandler = handler;
+export const POST: RequestHandler = handler;

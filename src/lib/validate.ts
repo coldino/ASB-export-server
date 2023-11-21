@@ -10,17 +10,18 @@ const requiredExportArrayFields = [
     ["Stats", 12],
 ];
 
-export function isValidExport(data: Record<string, unknown>): data is Record<string, unknown> {
+export function isValidExport(data: unknown): data is Record<string, unknown> {
     if (!data || typeof data !== 'object') return false;
+    const dataObj = data as Record<string, unknown>;
 
     // Check all required text fields are present
     for (const field of requiredExportTextFields) {
-        if (typeof data[field] !== 'string') return false;
+        if (typeof dataObj[field] !== 'string') return false;
     }
 
     // Check Stats is an array of 12 items
     for (const [field, length] of requiredExportArrayFields) {
-        const array = data[field];
+        const array = dataObj[field];
         if (!Array.isArray(array) || array.length !== length) return false;
     }
 
@@ -41,17 +42,18 @@ const requiredServerArrayFields = [
     ["TameAff", 12],
 ];
 
-export function isValidServer(data: Record<string, unknown>): data is Record<string, unknown> {
+export function isValidServer(data: unknown): data is Record<string, unknown> {
     if (!data || typeof data !== 'object') return false;
+    const dataObj = data as Record<string, unknown>;
 
     // Check all required text fields are present
     for (const field of requiredServerNumberFields) {
-        if (typeof data[field] !== 'number') return false;
+        if (typeof dataObj[field] !== 'number') return false;
     }
 
     // Check Stats is an array of 12 items
     for (const [field, length] of requiredServerArrayFields) {
-        const array = data[field];
+        const array = dataObj[field];
         if (!Array.isArray(array) || array.length !== length) return false;
     }
 

@@ -1,25 +1,26 @@
 # Export Server API
 
-All endpoints are rate-limited.
-
 Currently defined endpoints:
 
 | Method | Path                | Purpose |
 |--------|---------------------|---------|
 | GET | /api/v1/listen/[token] | A long-running connection for ASB to listen for events |
-| PUT | /api/v1/export/[token] | Used by the mod to send export files |
-| PUT | /api/v1/server/[token]/[hash] | Used by the mod to send server config files |
+| PUT or POST | /api/v1/export/[token] | Used by the mod to send export files |
+| PUT or POST | /api/v1/server/[token]/[hash] | Used by the mod to send server config files |
+
+All endpoints are rate-limited.
 
 ## Send Export file
 ```
-PUT /api/v1/export/[token]
+PUT/POST /api/v1/export/[token]
 ```
 Allows the client mod to send an export file. The token must have previously been given to the user by the receiver (usually ASB).
 
+**Note:** that if a server file is required is should be sent ***before*** the export.
+
 The request must include the following headers:
 | Header | Value |
 |-|-|
-| `content-type` | `application/json` |
 | `content-length` | Must be valid (strict size-limits apply) |
 
 The following status codes can results:
@@ -31,21 +32,25 @@ The following status codes can results:
 | `424` | Failed Dependency | No listener is connected with this token currently |
 | `429` | Too Many Requests | Rate limiting has denied this request |
 | `500+` | Server Error | Something went wrong with the server or its proxy |
+
+### Testing
+Example using HTTPie:
+```
+http put <server>/api/v1/server/123456/-8953437 < "...\DinoExports\ASB\Iguanodon_307252455-304387993.json"
+```
 
 ## Send Server config file
 ```
-PUT /api/v1/server/[token]/[hash]
+PUT/POST /api/v1/server/[token]/[hash]
 ```
-Allows the client mod to send a server configutation file. The token must have previously been given to the user by the receiver (usually ASB), and the hash is the same one included in the creature export file.
+Allows the client mod to send a server configutation file. The token must have previously been given to the user by the receiver (usually ASB), and the hash is the same one included in the creature export file. The JSON file must be included as the body.
 
 The request must include the following headers:
 | Header | Value |
 |-|-|
-| `content-type` | `application/json` |
 | `content-length` | Must be valid (strict size-limits apply) |
 
 The following status codes can results:
-
 | Status | Name | Meaning |
 |-|-|-|
 | `200` | OK | Export file is accepted |
@@ -54,6 +59,11 @@ The following status codes can results:
 | `429` | Too Many Requests | Rate limiting has denied this request |
 | `500+` | Server Error | Something went wrong with the server or its proxy |
 
+### Testing
+Example using HTTPie:
+```
+http put <server>/api/v1/export/123456 < "...\DinoExports\ASB\Servers\-895343795.json"
+```
 
 ## Listening
 ```
@@ -80,7 +90,15 @@ Possible event types:
 
 Where data is expected (for `export` and `server` events) it will be supplied on the next line encoded as JSON and includes as `data: <JSON encoded data>`.
 
-Example stream:
+### Testing
+To listen using `curl` is simple:
+```
+$ curl <server>/api/v1/listen/123456
+event: welcome
+```
+
+### Example Stream
+Full transcript of an example stream:
 ```
 event: welcome
 
