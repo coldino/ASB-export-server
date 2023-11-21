@@ -1,0 +1,23 @@
+@font-face {
+    font-family: "Sansation";
+    font-weight: bold;
+    src: url(/Sansation-Bold.ttf) format(truetype);
+}
+@font-face {
+    font-family: "Sansation";
+    src: url(/Sansation-Regular.ttf) format(truetype);
+}
+@font-face {
+    font-family: "Gobold";
+    font-weight: bold;
+    src: url(/Gobold-Bold.otf) format(opentype);
+}
+
+
+.sansation {
+    font-family: Sansation, sans-serif;
+}
+.gobold {
+    font-family: Gobold, sans-serif;
+    font-weight: bold;
+}
