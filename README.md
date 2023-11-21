@@ -6,7 +6,7 @@ Forwards Ark dino exports from consoles to ASB on the desktop
 
 This is a very simple server that allows ASB to listen for export and server data files sent from the ASB Export Gun mod. No data is stored, ever.
 
-See [API.md](./API.md) for details of the API.
+See [API.md](./docs/API.md) for details of the API.
 
 ## Dev
 

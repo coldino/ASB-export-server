@@ -4,11 +4,11 @@ All endpoints are rate-limited.
 
 Currently defined endpoints:
 
-| Method | Path                |
-|--------|---------------------|
-| GET | /api/v1/listen/[token] |
-| PUT | /api/v1/export/[token] |
-| PUT | /api/v1/server/[token]/[hash] |
+| Method | Path                | Purpose |
+|--------|---------------------|---------|
+| GET | /api/v1/listen/[token] | A long-running connection for ASB to listen for events |
+| PUT | /api/v1/export/[token] | Used by the mod to send export files |
+| PUT | /api/v1/server/[token]/[hash] | Used by the mod to send server config files |
 
 ## Send Export file
 ```
@@ -19,18 +19,18 @@ Allows the client mod to send an export file. The token must have previously bee
 The request must include the following headers:
 | Header | Value |
 |-|-|
-| content-type | `application/json` |
-| content-length | Must be valid |
+| `content-type` | `application/json` |
+| `content-length` | Must be valid (strict size-limits apply) |
 
 The following status codes can results:
 
 | Status | Name | Meaning |
 |-|-|-|
-| 200 | OK | Export file is accepted |
-| 400 | Bad Request | Invalid token, headers or data |
-| 424 | Failed Dependency | No listener is connected with this token currently |
-| 429 | Too Many Requests | Rate limiting has denied this request |
-| 500+ | Server Error | Something went wrong with the server or its proxy |
+| `200` | OK | Export file is accepted |
+| `400` | Bad Request | Invalid token, headers or data |
+| `424` | Failed Dependency | No listener is connected with this token currently |
+| `429` | Too Many Requests | Rate limiting has denied this request |
+| `500+` | Server Error | Something went wrong with the server or its proxy |
 
 ## Send Server config file
 ```
@@ -41,18 +41,18 @@ Allows the client mod to send a server configutation file. The token must have p
 The request must include the following headers:
 | Header | Value |
 |-|-|
-| content-type | `application/json` |
-| content-length | Must be valid |
+| `content-type` | `application/json` |
+| `content-length` | Must be valid (strict size-limits apply) |
 
 The following status codes can results:
 
 | Status | Name | Meaning |
 |-|-|-|
-| 200 | OK | Export file is accepted |
-| 400 | Bad Request | Invalid token, headers or data |
-| 424 | Failed Dependency | No listener is connected with this token currently |
-| 429 | Too Many Requests | Rate limiting has denied this request |
-| 500+ | Server Error | Something went wrong with the server or its proxy |
+| `200` | OK | Export file is accepted |
+| `400` | Bad Request | Invalid token, headers or data |
+| `424` | Failed Dependency | No listener is connected with this token currently |
+| `429` | Too Many Requests | Rate limiting has denied this request |
+| `500+` | Server Error | Something went wrong with the server or its proxy |
 
 
 ## Listening
@@ -64,7 +64,7 @@ Allows the receiver (usually ASB) to connect and receive events from the mod as 
 
 This endpoint uses SSE ([Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)) to keep the channel open and stream events to the caller as they happen.
 
-The receiver should automatically reconnect to this endpoint to ensure continued service. The exception to this rule is when the `replaced` event is received, which indicates another receiver has taken over with token.
+The receiver should automatically reconnect to this endpoint to ensure continued service. The exception to this rule is when the `replaced` event is received, which indicates another receiver has taken over for this token.
 
 Each message is sent as one or more lines of the form `<name>: <value>` with a full blank line is used to denote the end of this message (i.e. `\n\n`). We use the form `event: <event name>` as the first line to inform the message type.
 
@@ -76,6 +76,7 @@ Possible event types:
 | `replaced`      | Another listener connected with this token |
 | `export`        | A creature export file immediately follows as `data: <JSON encoded file>` |
 | `server <hash>` | A server config file immediately follows as `data: <JSON encoded file>` |
+| `closing`       | This connection is closing but reconnection is allowed (e.g. on a server restart) |
 
 Where data is expected (for `export` and `server` events) it will be supplied on the next line encoded as JSON and includes as `data: <JSON encoded data>`.
 
