@@ -30,7 +30,7 @@
 		</header>
 
 		<enhanced:img
-			class="w-100 md:w-160 float-right"
+			class="w-80 md:w-160 float-right"
 			src="./ASA_Logo_Transparent_780x827.png?w=640,400"
 			alt="ARK: Survival Ascended big swooshy 'A' logo"
 		/>
