@@ -1,10 +1,9 @@
-import { error } from '@sveltejs/kit';
-
 import type { RequestHandler } from './$types';
 
 import { listenerConnection, listenerGone } from '$lib/server/connections';
 import { isListenLimited } from '$lib/server/rates';
 import { isTokenValid } from '$lib/validate';
+import { jsonError } from '$lib/server/error';
 
 
 export const GET: RequestHandler = async (event) => {
@@ -13,12 +12,12 @@ export const GET: RequestHandler = async (event) => {
     // Get the token and perform simple validation
     const { token } = params;
     if (!isTokenValid(token)) {
-        throw error(400, 'Invalid token');
+        return jsonError(400, 'Invalid token');
     }
 
     // Apply the rate limiter
     if (await isListenLimited(event)) {
-        throw error(429, 'Too many requests');
+        return jsonError(429, 'Too many requests');
     }
 
     let pingInterval: undefined|number;
@@ -65,8 +64,6 @@ export const GET: RequestHandler = async (event) => {
             'Content-Type': 'text/event-stream',
             // Optional. Request the GET request not to be cached.
             'Cache-Control': 'no-cache no-store no-transform',
-
-            'Connection': 'keep-alive',
         }
     });
 };
