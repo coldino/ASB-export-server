@@ -1,6 +1,6 @@
 # ASB Export Server
 
-Forwards Ark dino exports from consoles to ASB on the desktop
+Forwards ARK dino exports from consoles to ASB on the desktop
 
 ## Overview
 
@@ -21,8 +21,8 @@ pnpm dev
 There are a few variables controlling some of the server limitations:
 ```
 # Example .env file
-MAX_EXPORT_SIZE=4096    # Max size of allowed Ark dino export files
-MAX_SERVER_SIZE=2048    # Max size of allowed Ark server multiplier files
+MAX_EXPORT_SIZE=4096    # Max size of allowed ARK dino export files
+MAX_SERVER_SIZE=2048    # Max size of allowed ARK server multiplier files
 MAX_CONNECTIONS=1000    # Max number of concurrent listener connections
 
 # @sveltejs/adapter-node
