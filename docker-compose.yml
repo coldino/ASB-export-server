@@ -6,10 +6,8 @@ services:
     image: coldino/asb-export-server:latest
     restart: unless-stopped
     ports:
-      - 4173:4173
+      - 4173:3000
     environment:
-      HOST: 0.0.0.0
-      PORT: 4173
       # PROTOCOL_HEADER: "x-forwarded-proto"
       # HOST_HEADER: "x-forwarded-host"
       # ADDRESS_HEADER: "x-forwarded-for"
