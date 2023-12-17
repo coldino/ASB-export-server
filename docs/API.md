@@ -111,9 +111,10 @@ The following HTTP status codes can be generated:
 
 | Status | Name | Meaning |
 |-|-|-|
-| `200` | OK | Export file is accepted |
+| `200` | OK | Connection is accepted |
 | `400` | Bad Request | Invalid token, headers or data |
 | `429` | Too Many Requests | Rate limiting has denied this request |
+| `507` | Insufficient Storage | The server has too many listeners connected |
 | `500+` | Server Error | Something went wrong with the server or its proxy |
 
 #### Events

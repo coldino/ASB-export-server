@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-import { listenerConnection, listenerGone } from '$lib/server/connections';
+import { listenerConnection, listenerGone, shouldAllowConnection } from '$lib/server/connections';
 import { isListenLimited } from '$lib/server/rates';
 import { isTokenValid } from '$lib/validate';
 import { jsonError } from '$lib/server/error';
@@ -18,6 +18,11 @@ export const GET: RequestHandler = async (event) => {
     // Apply the rate limiter
     if (await isListenLimited(event)) {
         return jsonError(429, 'Too many requests');
+    }
+
+    // Make sure we don't have too many connections
+    if (!shouldAllowConnection(token)) {
+        return jsonError(507, 'Too many connections');
     }
 
     let pingInterval: undefined|number;

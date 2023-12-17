@@ -12,6 +12,10 @@ export function isConnected(token: string): boolean {
     return connections.has(token);
 }
 
+export function shouldAllowConnection(token: string): boolean {
+    return connections.has(token) || connections.size < maxConnections;
+}
+
 export function sendData(token: string, event: string, data?: string | null | number | Record<string, unknown> | Array<unknown>): void {
     const connection = connections.get(token);
     if (!connection) return;
