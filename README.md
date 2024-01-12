@@ -1,6 +1,6 @@
 # ASB Export Server
 
-Forwards ARK dino exports from consoles to ASB on the desktop
+Forwards ARK dino exports from consoles to [ASB](https://github.com/cadon/ARKStatsExtractor) on the desktop using the [ASB Export Gun](https://www.curseforge.com/ark-survival-ascended/mods/ark-smart-breeding-export-gun) mod.
 
 ## Overview
 
@@ -18,7 +18,7 @@ pnpm dev
 
 ## Variables
 
-There are a few variables controlling some of the server limitations:
+There are a few environment variables controlling some of the server limits:
 ```
 # Example .env file
 MAX_EXPORT_SIZE=4096    # Max size of allowed ARK dino export files
@@ -31,7 +31,7 @@ BODY_SIZE_LIMIT=8192    # Max size of any request body
 
 ## Build
 
-Optional, if you don't have a multi-arch builder:
+Optional, if you don't have a Docker multi-arch builder:
 ```
 docker buildx create --name multiarch --use
 ```
@@ -39,3 +39,7 @@ docker buildx create --name multiarch --use
 ```
 docker buildx build --platform=linux/amd64,linux/arm64/v8 -t coldino/asb-export-server --push .
 ```
+
+## License
+
+This work is licensed as Affero GPL to ensure derived work is also open, but please get in contact if this is a problem and a dual license can be considered.
