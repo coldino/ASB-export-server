@@ -16,12 +16,15 @@ Currently defined endpoints:
 All endpoints are rate-limited.
 
 ## General
-For the JSON endpoints, a valid JSON response will always be generated.
+For the JSON endpoints, a valid JSON response will always be generated. This includes some fields to help the game mod identify its own response. See below the examples for more detail.
 
 If no response is needed a simple success response will be returned:
 ```json
 {
-    "success": true
+    "success": true,
+    "responseId": <number>,
+    "service": "asb-export-server",
+    "endpoint": <string>
 }
 ```
 
@@ -31,9 +34,20 @@ On error, JSON of the following form is returned:
     "error": {
         "code": <code>,
         "message": "<message>",
-    }
+    },
+    "responseId": <number>,
+    "service": "asb-export-server",
+    "endpoint": <string>
 }
 ```
+
+In all cases the common fields are:
+
+| Name | Type | Description |
+|-|-|-|
+|`responseId`|`number`| A copy of the `responseId` query parameter on the request, if present |
+|`service`|`string`| Always the literal `"asb-export-server"` |
+|`endpoint`|`string`| The endpoint that was called but without replaced parameters, for example: `/api/v1/export/[token]` |
 
 ## Endpoints
 
@@ -71,7 +85,7 @@ http put <server>/api/v1/export/123456 < "...\DinoExports\ASB\Iguanodon_30725245
 ```
 PUT/POST /api/v1/server/[token]/[hash]
 ```
-Allows the client mod to send a server configutation file. The token must have previously been given to the user by the receiver (usually ASB), and the hash is the same one included in the creature export file. The JSON file must be included as the body.
+Allows the client mod to send a server configuration file. The token must have previously been given to the user by the receiver (usually ASB), and the hash is the same one included in the creature export file. The JSON file must be included as the body.
 
 The request must include the following headers:
 | Header | Value |

@@ -4,25 +4,27 @@ import { listenerConnection, listenerGone, shouldAllowConnection } from '$lib/se
 import { isListenLimited } from '$lib/server/rates';
 import { isTokenValid } from '$lib/validate';
 import { jsonError } from '$lib/server/error';
+import { gatherExtraResponseData } from '$lib/server/extra';
 
 
 export const GET: RequestHandler = async (event) => {
     const {params} = event;
+    const extra = gatherExtraResponseData(event);
 
     // Get the token and perform simple validation
     const { token } = params;
     if (!isTokenValid(token)) {
-        return jsonError(400, 'Invalid token');
+        return jsonError(400, 'Invalid token', extra);
     }
 
     // Apply the rate limiter
     if (await isListenLimited(event)) {
-        return jsonError(429, 'Too many requests');
+        return jsonError(429, 'Too many requests', extra);
     }
 
     // Make sure we don't have too many connections
     if (!shouldAllowConnection(token)) {
-        return jsonError(507, 'Too many connections');
+        return jsonError(507, 'Too many connections', extra);
     }
 
     let pingInterval: undefined|number;
