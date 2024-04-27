@@ -1,26 +1,19 @@
 import type { RequestHandler } from './$types';
 
 import { listenerConnection, listenerGone, shouldAllowConnection } from '$lib/server/connections';
-import { isListenLimited } from '$lib/server/rates';
-import { isTokenValid } from '$lib/validate';
 import { jsonError } from '$lib/server/error';
 import { gatherExtraResponseData } from '$lib/server/extra';
+import { validateRateLimiting, validateToken } from '../../common';
 
 
 export const GET: RequestHandler = async (event) => {
     const {params} = event;
     const extra = gatherExtraResponseData(event);
 
-    // Get the token and perform simple validation
+    // Fetch params and validate everything we can before even looking at the body
     const { token } = params;
-    if (!isTokenValid(token)) {
-        return jsonError(400, 'Invalid token', extra);
-    }
-
-    // Apply the rate limiter
-    if (await isListenLimited(event)) {
-        return jsonError(429, 'Too many requests', extra);
-    }
+    validateToken(token, extra);
+    await validateRateLimiting(event, extra);
 
     // Make sure we don't have too many connections
     if (!shouldAllowConnection(token)) {

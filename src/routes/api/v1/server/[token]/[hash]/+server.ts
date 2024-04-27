@@ -2,43 +2,23 @@ import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';
 
-import { maxServerSize } from '$lib/server/config';
 import { isConnected, sendData } from '$lib/server/connections';
-import { isServerLimited } from '$lib/server/rates';
-import { isHashValid, isTokenValid, isValidServer } from '$lib/validate';
 import { jsonError } from '$lib/server/error';
 import { gatherExtraResponseData } from '$lib/server/extra';
+import { validateContentLength, validateRateLimiting, validateServerHash, validateToken } from '../../../common';
+import { isValidServer } from '$lib/validate';
 
 
 const handler: RequestHandler = async (event) => {
     const { params, request } = event;
     const extra = gatherExtraResponseData(event);
 
-    // Get the token and perform simple validation
-    const { token } = params;
-    if (!isTokenValid(token)) {
-        return jsonError(400, 'Invalid token', extra);
-    }
-    // Get the token and perform simple validation
-    const { hash } = params;
-    if (!isHashValid(hash)) {
-        return jsonError(400, 'Invalid hash', extra);
-    }
-
-    // Apply the rate limiter
-    if (await isServerLimited(event)) {
-        return jsonError(429, 'Too many requests', extra);
-    }
-
-    // Ensure there's a content length header and that it is not too large
-    const contentLength = request.headers.get('content-length');
-    if (!contentLength) {
-        return jsonError(400, 'Expected content length header', extra);
-    }
-    const contentLengthNum = parseInt(contentLength, 10);
-    if (contentLengthNum > maxServerSize) {
-        return jsonError(400, 'Content length too large', extra);
-    }
+    // Fetch params and validate everything we can before even looking at the body
+    const { token, hash } = params;
+    validateToken(token, extra);
+    validateServerHash(hash, extra);
+    await validateRateLimiting(event, extra);
+    validateContentLength(request, extra);
 
     // Don't go any further if the connection is not active
     if (!isConnected(token)) {

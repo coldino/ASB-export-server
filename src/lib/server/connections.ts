@@ -1,6 +1,5 @@
-import { error } from "@sveltejs/kit";
-
 import { maxConnections } from "./config";
+import { jsonError } from "./error";
 
 
 type Listener = {
@@ -16,7 +15,7 @@ export function shouldAllowConnection(token: string): boolean {
     return connections.has(token) || connections.size < maxConnections;
 }
 
-export function sendData(token: string, event: string, data?: string | null | number | Record<string, unknown> | Array<unknown>): void {
+export function sendData(token: string, event: string, data?: string | null | number | object | Array<unknown>): void {
     const connection = connections.get(token);
     if (!connection) return;
 
@@ -29,13 +28,13 @@ export function sendData(token: string, event: string, data?: string | null | nu
     }
 }
 
-export function listenerConnection(token: string, listener: Listener): void {
+export function listenerConnection(token: string, listener: Listener, errorExtra?: Record<string, unknown>): void {
     const connection = connections.get(token);
     if (connection) {
         connection.send("replaced");
         connection.close();
     } else if (connections.size >= maxConnections) {
-        throw error(429, "Too many connections");
+        jsonError(429, "Too many connections", errorExtra);
     }
 
     connections.set(token, listener);

@@ -48,20 +48,4 @@
 	.bl {
 		clip-path: polygon(0 0, 100% 100%, 0 100%);
 	}
-	.grad {
-		background-image: linear-gradient(
-			50deg,
-			hsl(189deg 100% 35%) 0%,
-			hsl(186deg 58% 42%) 18%,
-			hsl(179deg 44% 45%) 28%,
-			hsl(170deg 38% 48%) 36%,
-			hsl(159deg 36% 52%) 44%,
-			hsl(148deg 38% 55%) 51%,
-			hsl(137deg 40% 58%) 58%,
-			hsl(126deg 42% 60%) 65%,
-			hsl(115deg 48% 61%) 73%,
-			hsl(108deg 55% 61%) 83%,
-			hsl(102deg 63% 60%) 100%
-		);
-	}
 </style>
