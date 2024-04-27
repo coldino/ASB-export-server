@@ -1,6 +1,6 @@
 import type { RequestEvent } from "@sveltejs/kit";
 
-import { DOMAIN } from "$env/static/private";
+import { domainName } from "./config";
 
 
 export async function log(statusCode: number, event: RequestEvent, json?: object) {
@@ -20,7 +20,7 @@ export async function log(statusCode: number, event: RequestEvent, json?: object
 		if (referer) {
 			const refererUrl = await new URL(referer);
 			const refererHostname = refererUrl.hostname;
-			if (refererHostname === 'localhost' || refererHostname === DOMAIN) {
+			if (refererHostname === 'localhost' || refererHostname === domainName) {
 				referer = refererUrl.pathname;
 			}
 		} else {
