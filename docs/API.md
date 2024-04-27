@@ -109,6 +109,42 @@ Example using HTTPie:
 http put <server>/api/v1/server/123456/-8953437 < "...\DinoExports\ASB\Servers\-895343795.json"
 ```
 
+### Check For Listener
+```
+GET /api/v1/export/[token]
+```
+Allows the client mod to check a listener is active on the given token. HTTP status codes are used to indicate the result - in particular 200 and 424.
+
+#### Responses
+The following HTTP status codes can be generated:
+
+| Status | Name | Meaning |
+|-|-|-|
+| `200` | OK | Token has a current listener |
+| `400` | Bad Request | Invalid token, headers or data |
+| `424` | Failed Dependency | No listener is connected with this token currently |
+| `429` | Too Many Requests | Rate limiting has denied this request |
+| `500+` | Server Error | Something went wrong with the server or its proxy |
+
+#### Testing
+Example using HTTPie:
+```
+$ http get <server>/api/v1/check/12345-abcde?responseId=abc123abc
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Date: Sat, 27 Apr 2024 13:31:10 GMT
+Keep-Alive: timeout=5
+content-length: 104
+content-type: application/json
+
+{
+    "endpoint": "/api/v1/check/[token]",
+    "responseId": "abc123abc",
+    "service": "asb-export-server",
+    "success": true
+}
+```
 ### Listening
 ```
 GET /api/v1/listen/[token]
