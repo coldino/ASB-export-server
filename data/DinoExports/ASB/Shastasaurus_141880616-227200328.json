@@ -1,0 +1,108 @@
+{
+	"Version": 1,
+	"DinoName": "",
+	"TribeName": "Tribe of Quackers",
+	"SpeciesName": "Shastasaurus",
+	"TamerString": "Quackers",
+	"OwningPlayerName": "",
+	"ImprinterName": "",
+	"OwningPlayerID": 0,
+	"DinoID1": "141880616",
+	"DinoID2": "227200328",
+	"BlueprintPath": "/Game/ASA/Dinos/Shastasaurus/Shastasaurus_Character_BP.Shastasaurus_Character_BP_C",
+	"Stats": [
+		{
+			"Wild": 30,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 16560.30078125
+		},
+		{
+			"Wild": 26,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 1440
+		},
+		{
+			"Wild": 149,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 29820.5
+		},
+		{
+			"Wild": 0,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 150
+		},
+		{
+			"Wild": 28,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 34960
+		},
+		{
+			"Wild": 0,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 100
+		},
+		{
+			"Wild": 0,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 0
+		},
+		{
+			"Wild": 32,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 2132
+		},
+		{
+			"Wild": 33,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 3.6200003623962402
+		},
+		{
+			"Wild": 0,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 0
+		},
+		{
+			"Wild": 0,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 0
+		},
+		{
+			"Wild": 0,
+			"Tamed": 0,
+			"Mutated": 0,
+			"Value": 0
+		}
+	],
+	"ColorSetIndices": [ 42, 0, 21, 0, 38, 66 ],
+	"ColorSetValues":
+	{
+		"0": [ 0.36000001430511475, 0.13341799378395081, 0.067489996552467346, 0 ],
+		"1": [ 1, 1, 1, 1 ],
+		"2": [ 1, 0.47499999403953552, 0.30000001192092896, 0 ],
+		"3": [ 1, 1, 1, 1 ],
+		"4": [ 0.82499998807907104, 0.70491999387741089, 0.66825002431869507, 1 ],
+		"5": [ 0.25818300247192383, 0.36130699515342712, 0.30946901440620422, 0 ]
+	},
+	"IsFemale": false,
+	"NextAllowedMatingTimeDuration": 0,
+	"BabyAge": 1,
+	"MutagenApplied": false,
+	"Neutered": false,
+	"RandomMutationsMale": 0,
+	"RandomMutationsFemale": 0,
+	"ServerMultipliersHash": "-1384464334",
+	"TameEffectiveness": 1,
+	"BaseCharacterLevel": 150,
+	"DinoImprintingQuality": 0
+}

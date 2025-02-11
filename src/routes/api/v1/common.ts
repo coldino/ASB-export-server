@@ -4,6 +4,17 @@ import { isExportLimited } from "$lib/server/rates";
 import { isHashValid, isTokenValid } from "$lib/validate";
 import type { RequestEvent } from "@sveltejs/kit";
 
+export function validateWaitParam(url: URL, extra: Record<string, unknown>): number | undefined {
+    const wait = url.searchParams.get('wait');
+    if (wait === null) {
+        return undefined;
+    }
+    const waitNum = parseInt(wait, 10);
+    if (isNaN(waitNum)) {
+        jsonError(400, 'Invalid wait parameter', extra);
+    }
+    return waitNum;
+}
 
 export function validateToken(token: string, extra: Record<string, unknown>) {
     if (!isTokenValid(token)) {
@@ -34,5 +45,12 @@ export function validateContentLength(request: Request, extra: Record<string, un
     }
     if (contentLengthNum > maxExportSize) {
         jsonError(400, 'Invalid data', extra);
+    }
+}
+
+export function validateJsonContentHeader(request: Request, extra: Record<string, unknown>) {
+    const contentType = request.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+        jsonError(400, 'Invalid content type', extra);
     }
 }

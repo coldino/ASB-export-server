@@ -6,7 +6,7 @@ declare global {
 			error: {
 				code?: number;
 				message?: string;
-			}
+			};
 			errorId?: string;
 		}
 		interface Locals {
@@ -23,4 +23,4 @@ declare global {
 	}
 }
 
-export { };
+export {};

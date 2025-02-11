@@ -20,16 +20,20 @@ export const GET: RequestHandler = async (event) => {
         return jsonError(507, 'Too many connections', extra);
     }
 
-    let pingInterval: undefined|number;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let pingInterval: any;
 
     const stream = new ReadableStream({
         async start(controller) {
             // Register the connection
             const listener = {
-                send(event: string, data?: string) {
+                send(event: string, data?: string, id?: string) {
                     controller.enqueue(`event: ${event}\n`);
                     if (data) {
                         controller.enqueue(`data: ${data}\n`);
+                    }
+                    if (id) {
+                        controller.enqueue(`id: ${id}\n`);
                     }
                     controller.enqueue('\n');
                 },
