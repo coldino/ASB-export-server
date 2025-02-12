@@ -21,7 +21,7 @@ const handler: RequestHandler = async (event) => {
 		jsonError(424, 'No listener currently connected', extra);
 	}
 	if (!isValidResponseId(responseId)) {
-		jsonError(400, 'Invalid response ID', extra);
+		jsonError(410, 'Invalid response ID', extra);
 	}
 
 	// Decode the request body

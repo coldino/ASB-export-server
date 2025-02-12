@@ -65,18 +65,20 @@ PUT/POST /api/v1/export/[token]
 
 Allows the client mod to send an export file. The token must have previously been given to the user by the receiver (usually ASB).
 
-Optionally the client can wait to see if ASB sends data in response (i.e. perhaps the creature name) by setting the `wait` query parameter to a duration in seconds. If ASB sends data back within this time it will be included in the response as the `data` field. When this parameter is not present the endpoint returns immediately.
+Optionally the client can wait to see if ASB sends data in response (i.e. perhaps a newly generated creature name) by setting the `wait` query parameter to a duration in seconds. If ASB sends data back within this time it will be included in the response as the `data` field. When this parameter is not present the endpoint returns immediately.
 
 **Note:** that if a server file is required is should be sent **_before_** the export.
 
 Optional query parameters:
-| Name | Type | Description |
-|-|-|-|
-|`wait`|`number`| The number of seconds to wait for ASB to provide a response |
+
+| Name   | Type     | Description                                                 |
+| ------ | -------- | ----------------------------------------------------------- |
+| `wait` | `number` | The number of seconds to wait for ASB to provide a response |
 
 The request must include the following headers:
-| Header | Value |
-|-|-|
+
+| Header           | Value                                    |
+| ---------------- | ---------------------------------------- |
 | `content-length` | Must be valid (strict size-limits apply) |
 
 #### Errors
@@ -99,6 +101,26 @@ Example using HTTPie:
 http put <server>/api/v1/export/123456 < "...\DinoExports\ASB\Iguanodon_307252455-304387993.json"
 ```
 
+```
+http put <server>/api/v1/export/123456?wait=10 < "...\DinoExports\ASB\Iguanodon_307252455-304387993.json"
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Date: Wed, 12 Feb 2025 00:19:29 GMT
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+content-type: application/json
+
+{
+    "data": {
+        "generatedName": "yes! yes! yes!"
+    },
+    "endpoint": "/api/v1/export/[token]",
+    "service": "asb-export-server",
+    "success": true
+}
+```
+
 ### Send Server Config File
 
 ```
@@ -108,8 +130,9 @@ PUT/POST /api/v1/server/[token]/[hash]
 Allows the client mod to send a server configuration file. The token must have previously been given to the user by the receiver (usually ASB), and the hash is the same one included in the creature export file. The JSON file must be included as the body.
 
 The request must include the following headers:
-| Header | Value |
-|-|-|
+
+| Header           | Value                                    |
+| ---------------- | ---------------------------------------- |
 | `content-length` | Must be valid (strict size-limits apply) |
 
 #### Errors
@@ -135,7 +158,7 @@ http put <server>/api/v1/server/123456/-8953437 < "...\DinoExports\ASB\Servers\-
 ### Check For Listener
 
 ```
-GET /api/v1/export/[token]
+GET /api/v1/check/[token]
 ```
 
 Allows the client mod to check a listener is active on the given token. HTTP status codes are used to indicate the result - in particular 200 and 424.
@@ -203,13 +226,14 @@ The following HTTP status codes can be generated:
 Each message is sent as one or more lines of the form `<name>: <value>` with a full blank line is used to denote the end of this message (i.e. `\n\n`). We use the form `event: <event name>` as the first line to inform the message type.
 
 Possible event types:
-| Form            | Meaning |
-|-----------------|---------|
-| `welcome`       | This connection is now active |
-| `ping`          | Sent regularly to maintain the connection - can be ignored |
-| `replaced`      | Another listener connected with this token |
-| `export`        | A creature export file immediately follows as `data: <JSON encoded file>` |
-| `server <hash>` | A server config file immediately follows as `data: <JSON encoded file>` |
+
+| Form            | Meaning                                                                           |
+| --------------- | --------------------------------------------------------------------------------- |
+| `welcome`       | This connection is now active                                                     |
+| `ping`          | Sent regularly to maintain the connection - can be ignored                        |
+| `replaced`      | Another listener connected with this token                                        |
+| `export`        | A creature export file immediately follows as `data: <JSON encoded file>`         |
+| `server <hash>` | A server config file immediately follows as `data: <JSON encoded file>`           |
 | `closing`       | This connection is closing but reconnection is allowed (e.g. on a server restart) |
 
 Where data is expected (for `export` and `server` events) it will be supplied on the next line encoded as JSON and includes as `data: <JSON encoded data>`.
@@ -236,10 +260,10 @@ event: ping
 
 event: export
 data: {"Format":1,"DinoName":"Generated","TribeName":"QuackTribe","SpeciesName":"Iguanodon","TamerString":"Quackers","OwningPlayerName":"","ImprinterName":"","OwningPlayerID":0,"DinoID1":"307252455","DinoID2":"304387993","BlueprintPath":"/Game/PrimalEarth/Dinos/Iguanodon/Iguanodon_Character_BP.Iguanodon_Character_BP_C","Stats":[{"Wild":1,"Tamed":0,"Mutated":0,"Value":300.07000732421875},{"Wild":1,"Tamed":0,"Mutated":0,"Value":220},{"Wild":7,"Tamed":0,"Mutated":0,"Value":298.70001220703125},{"Wild":1,"Tamed":0,"Mutated":0,"Value":165},{"Wild":1,"Tamed":0,"Mutated":0,"Value":1980},{"Wild":0,"Tamed":0,"Mutated":0,"Value":100},{"Wild":0,"Tamed":0,"Mutated":0,"Value":0},{"Wild":1,"Tamed":0,"Mutated":0,"Value":382.5},{"Wild":1,"Tamed":0,"Mutated":0,"Value":0.3171199560165405},{"Wild":1,"Tamed":0,"Mutated":0,"Value":0},{"Wild":0,"Tamed":0,"Mutated":0,"Value":0},{"Wild":0,"Tamed":0,"Mutated":0,"Value":0}],"ColorSetIndices":[82,0,0,0,26,30],"ColorSetValues":{"0":[0.0262410007417202,0.014444000087678432,0.027320999652147293,0],"1":[1,1,1,1],"2":[1,1,1,1],"3":[1,1,1,1],"4":[0.19499999284744263,0.30000001192092896,0.19499999284744263,0],"5":[0.7799999713897705,0.699999988079071,1,0]},"IsFemale":true,"NextAllowedMatingTimeDuration":0,"BabyAge":1,"MutagenApplied":false,"Neutered":false,"RandomMutationsMale":0,"RandomMutationsFemale":0,"ServerMultipliersHash":"-895343795","TameEffectiveness":1,"BaseCharacterLevel":8,"DinoImprintingQuality":0}
+id: p4TRQeqJdx51
 
 event: server 1234567
 data: {"Version":2,"WildLevel":[1,1,1,1,1,1,1,1,1,1,1,1],"TameLevel":[0.20000000298023224,1,1,1,1,1,1,1,0.17000000178813934,1,1,1],"TameAdd":[0.14000000059604645,1,1,1,1,1,1,1,0.14000000059604645,1,1,1],"TameAff":[0.4399999976158142,1,1,1,1,1,1,1,0.4399999976158142,1,1,1],"WildLevelStepSize":4,"MaxWildLevel":120,"DestroyTamesOverLevelClamp":0,"TamingSpeedMultiplier":1,"DinoCharacterFoodDrainMultiplier":1,"MatingSpeedMultiplier":1,"MatingIntervalMultiplier":0.10000000149011612,"EggHatchSpeedMultiplier":10,"BabyMatureSpeedMultiplier":10,"BabyCuddleIntervalMultiplier":0.10000000149011612,"BabyImprintAmountMultiplier":1,"BabyImprintingStatScaleMultiplier":1,"BabyFoodConsumptionSpeedMultiplier":1,"TamedDinoCharacterFoodDrainMultiplier":1,"WildDinoTorporDrainMultiplier":1,"WildDinoCharacterFoodDrainMultiplier":1,"AllowSpeedLeveling":false,"AllowFlyerSpeedLeveling":false,"UseSingleplayerSettings":false,"SessionName":"The Carnotaurus Trials - (v26.38)"}
-id: p4TRQeqJdx51
 
 event: ping
 
@@ -256,12 +280,15 @@ PUT/POST /api/v1/respond/[token]/[id]
 
 Allows ASB to provide return data to the client mod in response to an export. This data could for example include a generated creature name, or a failure report.
 
-The JSON body will be sent as a response to the client that sent the export, but only if it is still waiting. Once the client stops waiting, responses will be silently discarded.
+The `id` field should be taken from events passed to a listener on the `listen` endpoint. Only events with this field can be responded to.
+
+The JSON body will be sent as a response to the client that sent the export, but only if it is still waiting. Once the client stops waiting, responses will fail or might be ignored silently.
 
 The request must include the following headers:
-| Header | Value |
-|-|-|
-| `content-type` | `application/json` |
+
+| Header           | Value                                    |
+| ---------------- | ---------------------------------------- |
+| `content-type`   | `application/json`                       |
 | `content-length` | Must be valid (strict size-limits apply) |
 
 #### Errors
@@ -271,7 +298,8 @@ The following HTTP status codes can be generated:
 | Status | Name              | Meaning                                            |
 | ------ | ----------------- | -------------------------------------------------- |
 | `200`  | OK                | Export file is accepted                            |
-| `400`  | Bad Request       | Invalid token, headers or data                     |
+| `400`  | Bad Request       | Invalid token, id, headers or data                 |
+| `410`  | Gone              | The response ID is no longer valid                 |
 | `424`  | Failed Dependency | No listener is connected with this token currently |
 | `429`  | Too Many Requests | Rate limiting has denied this request              |
 | `500+` | Server Error      | Something went wrong with the server or its proxy  |
