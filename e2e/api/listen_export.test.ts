@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
-import { createListener } from './listener';
+
 import { exportData } from './data';
+import { createListener } from './listener';
 
 test('listen receives exports sent to the same token', async ({ request, baseURL }) => {
 	// Connect a listener

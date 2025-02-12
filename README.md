@@ -11,6 +11,7 @@ See [API.md](./docs/API.md) for details of the API.
 ## Dev
 
 This is a SvekteKit app with no real UI to speak of, and just a couple of API routes.
+
 ```
 pnpm i
 pnpm dev
@@ -19,6 +20,7 @@ pnpm dev
 ## Variables
 
 There are a few environment variables controlling some of the server limits:
+
 ```
 # Example .env file
 MAX_EXPORT_SIZE=4096    # Max size of allowed ARK dino export files
@@ -32,6 +34,7 @@ BODY_SIZE_LIMIT=8192    # Max size of any request body
 ## Build
 
 Optional, if you don't have a Docker multi-arch builder:
+
 ```
 docker buildx create --name multiarch --use
 ```

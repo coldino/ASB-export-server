@@ -5,11 +5,14 @@ import type { RequestHandler } from './$types';
 import { getConnectionCount } from '$lib/server/connections';
 
 export const GET: RequestHandler = async () => {
-    return json({
-        connections: getConnectionCount(),
-    }, {
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-        }
-    });
+	return json(
+		{
+			connections: getConnectionCount(),
+		},
+		{
+			headers: {
+				'Access-Control-Allow-Origin': '*',
+			},
+		}
+	);
 };

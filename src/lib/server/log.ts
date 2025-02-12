@@ -1,7 +1,6 @@
-import type { RequestEvent } from "@sveltejs/kit";
+import type { RequestEvent } from '@sveltejs/kit';
 
-import { domainName } from "./config";
-
+import { domainName } from './config';
 
 export async function log(statusCode: number, event: RequestEvent, json?: object) {
 	try {
@@ -16,7 +15,7 @@ export async function log(statusCode: number, event: RequestEvent, json?: object
 		const errorId = event?.locals?.errorId || undefined;
 		const errorStackTrace = event?.locals?.errorStackTrace || undefined;
 
-		let referer: string|undefined = event.request.headers.get('referer') || undefined;
+		let referer: string | undefined = event.request.headers.get('referer') || undefined;
 		if (referer) {
 			const refererUrl = await new URL(referer);
 			const refererHostname = refererUrl.hostname;
@@ -30,14 +29,14 @@ export async function log(statusCode: number, event: RequestEvent, json?: object
 			level: level,
 			method: event.request.method,
 			// prefer route ID over real paths for anything but 404 to avoid logging tokens
-			path: statusCode === 404 ? event?.url?.pathname : (event?.locals?.routeId || event?.url?.pathname),
+			path: statusCode === 404 ? event?.url?.pathname : event?.locals?.routeId || event?.url?.pathname,
 			status: statusCode,
 			timeInMs: Date.now() - event?.locals?.startTimer,
 			referer: referer,
 			error: error,
 			errorId: errorId,
 			errorStackTrace: errorStackTrace,
-            errorResponse: json,
+			errorResponse: json,
 		};
 		console.log('log:', JSON.stringify(logData));
 		// if (!AXIOM_TOKEN || !AXIOM_ORG_ID || !AXIOM_DATASET) {

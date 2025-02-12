@@ -9,19 +9,21 @@ No data is stored on the server at all.
 
 Currently defined endpoints:
 
-| Method | Path                | Purpose |
-|--------|---------------------|---------|
-| GET | /api/v1/listen/[token] | A long-running connection for ASB to listen for events |
-| PUT or POST | /api/v1/export/[token] | Used by the mod to send export files |
-| PUT or POST | /api/v1/server/[token]/[hash] | Used by the mod to send server config files |
-| PUT or POST | /api/v1/respond/[token]/[id] | Used by ASB to send data back to the mod |
+| Method      | Path                          | Purpose                                                |
+| ----------- | ----------------------------- | ------------------------------------------------------ |
+| GET         | /api/v1/listen/[token]        | A long-running connection for ASB to listen for events |
+| PUT or POST | /api/v1/export/[token]        | Used by the mod to send export files                   |
+| PUT or POST | /api/v1/server/[token]/[hash] | Used by the mod to send server config files            |
+| PUT or POST | /api/v1/respond/[token]/[id]  | Used by ASB to send data back to the mod               |
 
 All endpoints are rate-limited.
 
 ## Common Behaviour
+
 For the JSON endpoints, a valid JSON response will always be generated. This includes some fields to help the game mod identify its own response. See below the examples for more detail.
 
 If no response is needed a simple success response will be returned:
+
 ```json
 {
     "success": true,
@@ -32,6 +34,7 @@ If no response is needed a simple success response will be returned:
 ```
 
 On error, JSON of the following form is returned:
+
 ```json
 {
     "error": {
@@ -46,23 +49,25 @@ On error, JSON of the following form is returned:
 
 In all cases the common fields are:
 
-| Name | Type | Description |
-|-|-|-|
-|`responseId`|`number`| A copy of the `responseId` query parameter on the request, if present |
-|`service`|`string`| Always the literal `"asb-export-server"` |
-|`endpoint`|`string`| The endpoint that was called but without replaced parameters, for example the literal `/api/v1/export/[token]` |
+| Name         | Type     | Description                                                                                                    |
+| ------------ | -------- | -------------------------------------------------------------------------------------------------------------- |
+| `responseId` | `number` | A copy of the `responseId` query parameter on the request, if present                                          |
+| `service`    | `string` | Always the literal `"asb-export-server"`                                                                       |
+| `endpoint`   | `string` | The endpoint that was called but without replaced parameters, for example the literal `/api/v1/export/[token]` |
 
 ## Endpoints
 
 ### Send Export File
+
 ```
 PUT/POST /api/v1/export/[token]
 ```
+
 Allows the client mod to send an export file. The token must have previously been given to the user by the receiver (usually ASB).
 
 Optionally the client can wait to see if ASB sends data in response (i.e. perhaps the creature name) by setting the `wait` query parameter to a duration in seconds. If ASB sends data back within this time it will be included in the response as the `data` field. When this parameter is not present the endpoint returns immediately.
 
-**Note:** that if a server file is required is should be sent ***before*** the export.
+**Note:** that if a server file is required is should be sent **_before_** the export.
 
 Optional query parameters:
 | Name | Type | Description |
@@ -75,26 +80,31 @@ The request must include the following headers:
 | `content-length` | Must be valid (strict size-limits apply) |
 
 #### Errors
+
 The following HTTP status codes can be generated:
 
-| Status | Name | Meaning |
-|-|-|-|
-| `200` | OK | Export file is accepted |
-| `400` | Bad Request | Invalid token, headers or data |
-| `424` | Failed Dependency | No listener is connected with this token currently |
-| `429` | Too Many Requests | Rate limiting has denied this request |
-| `500+` | Server Error | Something went wrong with the server or its proxy |
+| Status | Name              | Meaning                                            |
+| ------ | ----------------- | -------------------------------------------------- |
+| `200`  | OK                | Export file is accepted                            |
+| `400`  | Bad Request       | Invalid token, headers or data                     |
+| `424`  | Failed Dependency | No listener is connected with this token currently |
+| `429`  | Too Many Requests | Rate limiting has denied this request              |
+| `500+` | Server Error      | Something went wrong with the server or its proxy  |
 
 #### Testing
+
 Example using HTTPie:
+
 ```
 http put <server>/api/v1/export/123456 < "...\DinoExports\ASB\Iguanodon_307252455-304387993.json"
 ```
 
 ### Send Server Config File
+
 ```
 PUT/POST /api/v1/server/[token]/[hash]
 ```
+
 Allows the client mod to send a server configuration file. The token must have previously been given to the user by the receiver (usually ASB), and the hash is the same one included in the creature export file. The JSON file must be included as the body.
 
 The request must include the following headers:
@@ -103,41 +113,49 @@ The request must include the following headers:
 | `content-length` | Must be valid (strict size-limits apply) |
 
 #### Errors
+
 The following HTTP status codes can be generated:
 
-| Status | Name | Meaning |
-|-|-|-|
-| `200` | OK | Export file is accepted |
-| `400` | Bad Request | Invalid token, headers or data |
-| `424` | Failed Dependency | No listener is connected with this token currently |
-| `429` | Too Many Requests | Rate limiting has denied this request |
-| `500+` | Server Error | Something went wrong with the server or its proxy |
+| Status | Name              | Meaning                                            |
+| ------ | ----------------- | -------------------------------------------------- |
+| `200`  | OK                | Export file is accepted                            |
+| `400`  | Bad Request       | Invalid token, headers or data                     |
+| `424`  | Failed Dependency | No listener is connected with this token currently |
+| `429`  | Too Many Requests | Rate limiting has denied this request              |
+| `500+` | Server Error      | Something went wrong with the server or its proxy  |
 
 #### Testing
+
 Example using HTTPie:
+
 ```
 http put <server>/api/v1/server/123456/-8953437 < "...\DinoExports\ASB\Servers\-895343795.json"
 ```
 
 ### Check For Listener
+
 ```
 GET /api/v1/export/[token]
 ```
+
 Allows the client mod to check a listener is active on the given token. HTTP status codes are used to indicate the result - in particular 200 and 424.
 
 #### Responses
+
 The following HTTP status codes can be generated:
 
-| Status | Name | Meaning |
-|-|-|-|
-| `200` | OK | Token has a current listener |
-| `400` | Bad Request | Invalid token, headers or data |
-| `424` | Failed Dependency | No listener is connected with this token currently |
-| `429` | Too Many Requests | Rate limiting has denied this request |
-| `500+` | Server Error | Something went wrong with the server or its proxy |
+| Status | Name              | Meaning                                            |
+| ------ | ----------------- | -------------------------------------------------- |
+| `200`  | OK                | Token has a current listener                       |
+| `400`  | Bad Request       | Invalid token, headers or data                     |
+| `424`  | Failed Dependency | No listener is connected with this token currently |
+| `429`  | Too Many Requests | Rate limiting has denied this request              |
+| `500+` | Server Error      | Something went wrong with the server or its proxy  |
 
 #### Testing
+
 Example using HTTPie:
+
 ```
 $ http get <server>/api/v1/check/12345-abcde?responseId=abc123abc
 HTTP/1.1 200 OK
@@ -155,7 +173,9 @@ content-type: application/json
     "success": true
 }
 ```
+
 ### Listening
+
 ```
 GET /api/v1/listen/[token]
 ```
@@ -167,17 +187,19 @@ This endpoint uses SSE ([Server-Sent Events](https://developer.mozilla.org/en-US
 The receiver should automatically reconnect to this endpoint to ensure continued service. The exception to this rule is when the `replaced` event is received, which indicates another receiver has taken over for this token.
 
 #### Errors
+
 The following HTTP status codes can be generated:
 
-| Status | Name | Meaning |
-|-|-|-|
-| `200` | OK | Connection is accepted |
-| `400` | Bad Request | Invalid token, headers or data |
-| `429` | Too Many Requests | Rate limiting has denied this request |
-| `507` | Insufficient Storage | The server has too many listeners connected |
-| `500+` | Server Error | Something went wrong with the server or its proxy |
+| Status | Name                 | Meaning                                           |
+| ------ | -------------------- | ------------------------------------------------- |
+| `200`  | OK                   | Connection is accepted                            |
+| `400`  | Bad Request          | Invalid token, headers or data                    |
+| `429`  | Too Many Requests    | Rate limiting has denied this request             |
+| `507`  | Insufficient Storage | The server has too many listeners connected       |
+| `500+` | Server Error         | Something went wrong with the server or its proxy |
 
 #### Events
+
 Each message is sent as one or more lines of the form `<name>: <value>` with a full blank line is used to denote the end of this message (i.e. `\n\n`). We use the form `event: <event name>` as the first line to inform the message type.
 
 Possible event types:
@@ -195,14 +217,18 @@ Where data is expected (for `export` and `server` events) it will be supplied on
 If it is possible to respond to the event, an identifier will be included: `id: <string identifier>`.
 
 #### Testing
+
 To listen using `curl` is simple:
+
 ```
 $ curl <server>/api/v1/listen/123456
 event: welcome
 ```
 
 #### Example Stream
+
 Full transcript of an example stream:
+
 ```
 event: welcome
 
@@ -223,9 +249,11 @@ event: replaced
 ```
 
 ### Respond
+
 ```
 PUT/POST /api/v1/respond/[token]/[id]
 ```
+
 Allows ASB to provide return data to the client mod in response to an export. This data could for example include a generated creature name, or a failure report.
 
 The JSON body will be sent as a response to the client that sent the export, but only if it is still waiting. Once the client stops waiting, responses will be silently discarded.
@@ -237,22 +265,27 @@ The request must include the following headers:
 | `content-length` | Must be valid (strict size-limits apply) |
 
 #### Errors
+
 The following HTTP status codes can be generated:
 
-| Status | Name | Meaning |
-|-|-|-|
-| `200` | OK | Export file is accepted |
-| `400` | Bad Request | Invalid token, headers or data |
-| `424` | Failed Dependency | No listener is connected with this token currently |
-| `429` | Too Many Requests | Rate limiting has denied this request |
-| `500+` | Server Error | Something went wrong with the server or its proxy |
+| Status | Name              | Meaning                                            |
+| ------ | ----------------- | -------------------------------------------------- |
+| `200`  | OK                | Export file is accepted                            |
+| `400`  | Bad Request       | Invalid token, headers or data                     |
+| `424`  | Failed Dependency | No listener is connected with this token currently |
+| `429`  | Too Many Requests | Rate limiting has denied this request              |
+| `500+` | Server Error      | Something went wrong with the server or its proxy  |
 
 #### Testing
+
 Example using HTTPie:
+
 ```
 http post <server>/api/v1/respond/123456/p4TRQeqJdx51 generatedName="22 F183/28/27"
 ```
+
 Example using curl (note: would need extra escaping for " on Windows):
+
 ```
 curl -H "Content-Type: application/json" --request POST --data '{"generatedName":"22 F183/28/27"}' <server>/api/v1/respond/123456/p4TRQeqJdx51
 ```

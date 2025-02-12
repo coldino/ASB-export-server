@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { createListener } from './listener';
+
 import { exportData } from './data';
+import { createListener } from './listener';
 
 test('responding to an export is possible', async ({ request, baseURL }) => {
 	// Connect a listener
 	await using listener = await createListener(baseURL!);
-	const _welcomeEvent = await listener.waitForNextEvent(5000);
+	expect(await listener.waitForNextEvent(5000)).toHaveProperty('event', 'welcome');
 
 	const respondData = { name: "I'm some response data" };
 

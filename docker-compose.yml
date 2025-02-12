@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 
 services:
   asb-export-server:
@@ -7,11 +7,10 @@ services:
     restart: unless-stopped
     ports:
       - 4173:3000
-    env_file:
-      .env.live
+    env_file: .env.live
     environment:
       # PROTOCOL_HEADER: "x-forwarded-proto"
       # HOST_HEADER: "x-forwarded-host"
       # ADDRESS_HEADER: "x-forwarded-for"
       # XFF_DEPTH: 1
-      ORIGIN: "http://localhost:4173"
+      ORIGIN: 'http://localhost:4173'

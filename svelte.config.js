@@ -13,7 +13,7 @@ const config = {
 		prerender: {
 			crawl: true,
 		},
-	}
+	},
 };
 
 export default config;

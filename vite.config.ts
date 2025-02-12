@@ -1,25 +1,19 @@
-import { svelteTesting } from '@testing-library/svelte/vite';
-import { defineConfig } from 'vite';
-import UnoCSS from 'unocss/vite';
-import presetUno from '@unocss/preset-uno';
-import extractorSvelte from '@unocss/extractor-svelte';
-import transformerDirectives from '@unocss/transformer-directives';
 import { enhancedImages } from '@sveltejs/enhanced-img';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { svelteTesting } from '@testing-library/svelte/vite';
+import extractorSvelte from '@unocss/extractor-svelte';
+import presetUno from '@unocss/preset-uno';
+import transformerDirectives from '@unocss/transformer-directives';
+import UnoCSS from 'unocss/vite';
+import { defineConfig } from 'vite';
 import { configDefaults } from 'vitest/config';
 
 export default defineConfig({
 	plugins: [
 		UnoCSS({
-			presets: [
-				presetUno(),
-			],
-			extractors: [
-				extractorSvelte(),
-			],
-			transformers: [
-				transformerDirectives(),
-			],
+			presets: [presetUno()],
+			extractors: [extractorSvelte()],
+			transformers: [transformerDirectives()],
 		}),
 		enhancedImages(),
 		sveltekit(),
