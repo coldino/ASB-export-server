@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { exportData } from './data';
+import { exportTestData } from './data';
 import { createListener } from './listener';
 
 test('responding to an export is possible', async ({ request, baseURL }) => {
@@ -14,7 +14,7 @@ test('responding to an export is possible', async ({ request, baseURL }) => {
 	async function pretendToBeMod() {
 		const exportResp = await request.post(`export/${listener.token}?wait=5`, {
 			headers: { 'Content-Type': 'application/json' },
-			data: exportData,
+			data: exportTestData,
 		});
 		expect(exportResp.ok()).toBeTruthy();
 		const exportBody = await exportResp.json();
@@ -26,7 +26,7 @@ test('responding to an export is possible', async ({ request, baseURL }) => {
 	async function pretendToBeASB() {
 		const exportEvent = await listener.waitForNextEvent();
 		expect(exportEvent).toHaveProperty('event', 'export');
-		expect(exportEvent).toHaveProperty('data', exportData);
+		expect(exportEvent).toHaveProperty('data', exportTestData);
 		expect(exportEvent).toHaveProperty('id');
 		const respondId = exportEvent.id!;
 		expect(respondId).toMatch(/^[0-9a-z]{6,32}$/);

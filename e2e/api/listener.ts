@@ -29,6 +29,10 @@ class BasicServerEventListener implements AsyncDisposable, Disposable {
 		return !this.streamReader;
 	}
 
+	public async close() {
+		await this[Symbol.asyncDispose]();
+	}
+
 	private async connect(): Promise<void> {
 		try {
 			const response = await fetch(this.url, {
@@ -205,6 +209,9 @@ export async function createListener(baseURL: string, token?: string) {
 		},
 		waitForNextEvent(timeoutMs?: number): Promise<BasicEvent> {
 			return listener.waitForNextEvent(timeoutMs);
+		},
+		close() {
+			return listener.close();
 		},
 		async [Symbol.asyncDispose](): Promise<void> {
 			await listener[Symbol.asyncDispose]();
