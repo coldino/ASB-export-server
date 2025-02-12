@@ -2,7 +2,8 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
 	webServer: {
-		command: 'npm run build && npm run preview',
+		// We add a parameter to disable rate limits for testing the API
+		command: 'npm run build && npm run preview --port=4173 -- -- --disable-rate-limits',
 		port: 4173,
 	},
 

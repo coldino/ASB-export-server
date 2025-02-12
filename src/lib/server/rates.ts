@@ -25,13 +25,26 @@ const listenRateLimiters: RateLimiter[] = [
 ];
 
 export async function isExportLimited(event: RequestEvent) {
+	if (rateLimitsDisabled()) {
+		return false;
+	}
 	return anyLimited(exportRateLimiters, event);
 }
 
 export async function isServerLimited(event: RequestEvent) {
+	if (rateLimitsDisabled()) {
+		return false;
+	}
 	return anyLimited(serverRateLimiters, event);
 }
 
 export async function isListenLimited(event: RequestEvent) {
+	if (rateLimitsDisabled()) {
+		return false;
+	}
 	return anyLimited(listenRateLimiters, event);
+}
+
+function rateLimitsDisabled() {
+	return process.argv.includes('--disable-rate-limits') || process.env.DISABLE_RATE_LIMITS === '1';
 }
