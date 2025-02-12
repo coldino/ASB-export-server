@@ -35,7 +35,6 @@
 		"eslint": "^8.56",
 		"eslint-config-prettier": "*",
 		"eslint-plugin-svelte": "*",
-		"eventsource": "^3.0.5",
 		"jsdom": "^25.0.1",
 		"prettier": "^3.2.5",
 		"prettier-plugin-svelte": "*",
