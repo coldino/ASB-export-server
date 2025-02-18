@@ -2,11 +2,11 @@ import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';
 
+import { validateContentLength, validateRateLimiting, validateServerHash, validateToken } from '$lib/common';
 import { isConnected, sendData } from '$lib/server/connections';
 import { jsonError } from '$lib/server/error';
 import { gatherExtraResponseData } from '$lib/server/extra';
 import { isValidServer } from '$lib/validate';
-import { validateContentLength, validateRateLimiting, validateServerHash, validateToken } from '../../../common';
 
 const handler: RequestHandler = async (event) => {
 	const { params, request } = event;

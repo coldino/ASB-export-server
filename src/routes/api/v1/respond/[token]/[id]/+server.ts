@@ -1,8 +1,8 @@
+import { validateContentLength, validateJsonContentHeader, validateRateLimiting, validateToken } from '$lib/common';
 import { isConnected, isValidResponseId, sendResponse } from '$lib/server/connections';
 import { jsonError } from '$lib/server/error';
 import { gatherExtraResponseData } from '$lib/server/extra';
 import { json } from '@sveltejs/kit';
-import { validateContentLength, validateJsonContentHeader, validateRateLimiting, validateToken } from '../../../common';
 import type { RequestHandler } from './$types';
 
 const handler: RequestHandler = async (event) => {

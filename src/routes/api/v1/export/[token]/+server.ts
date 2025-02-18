@@ -2,10 +2,10 @@ import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';
 
+import { validateContentLength, validateRateLimiting, validateToken, validateWaitParam } from '$lib/common';
 import { addResponseListener, getNewReponseId, isConnected, removeResponseListener, sendData } from '$lib/server/connections';
 import { jsonError } from '$lib/server/error';
 import { gatherExtraResponseData } from '$lib/server/extra';
-import { validateContentLength, validateRateLimiting, validateToken, validateWaitParam } from '../../common';
 import { isValidExport } from '$lib/validate';
 
 const handler: RequestHandler = async (event) => {
@@ -97,39 +97,6 @@ const handler: RequestHandler = async (event) => {
 			'Content-Type': 'application/json',
 		},
 	});
-
-	// // Await a promise that will resolve when either the timeout expires or the response is received
-	// const result = await new Promise((resolve) => {
-	//     let answered = false;
-
-	//     const resolveResponse: ((value: unknown) => void) = (response) => {
-	//         removeResponseListener(responseId);
-	//         if (!answered) {
-	//             clearTimeout(timeout);
-	//             resolve(response);
-	//             answered = true;
-	//         }
-	//     };
-
-	//     // Register that we're waiting
-	//     addResponseListener(responseId, resolveResponse);
-
-	//     // Start the timeout
-	//     const timeout = setTimeout(() => {
-	//         removeResponseListener(responseId);
-	//         if (!answered) {
-	//             resolve(undefined);
-	//             answered = true;
-	//         }
-	//     }, wait * 1000);
-	// });
-
-	// // Return the result with or without the response data
-	// if (result === undefined) {
-	//     return json({ success: true, waitNoResult: wait, data: undefined, ...extra })
-	// } else {
-	//     return json({ success: true, waitResult: wait, data: result, ...extra });
-	// }
 };
 
 export const PUT: RequestHandler = handler;

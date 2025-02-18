@@ -1,9 +1,9 @@
 import type { RequestHandler } from './$types';
 
+import { validateRateLimiting, validateToken } from '$lib/common';
 import { listenerConnection, listenerGone, shouldAllowConnection } from '$lib/server/connections';
 import { jsonError } from '$lib/server/error';
 import { gatherExtraResponseData } from '$lib/server/extra';
-import { validateRateLimiting, validateToken } from '../../common';
 
 export const GET: RequestHandler = async (event) => {
 	const { params } = event;
