@@ -54,3 +54,15 @@ export function validateJsonContentHeader(request: Request, extra: Record<string
 		jsonError(400, 'Invalid content type', extra);
 	}
 }
+
+const idRegex = /^-?\d{1,10}$/;
+export function validateIdParts(id1: string, id2: string, extra: Record<string, unknown>) {
+	if (!idRegex.test(id1) || !idRegex.test(id2)) {
+		jsonError(400, 'Invalid ID', extra);
+	}
+	const id1Num = parseInt(id1, 10);
+	const id2Num = parseInt(id2, 10);
+	if (isNaN(id1Num) || isNaN(id2Num)) {
+		jsonError(400, 'Invalid ID', extra);
+	}
+}
