@@ -229,14 +229,16 @@ Each message is sent as one or more lines of the form `<name>: <value>` with a f
 
 Possible event types:
 
-| Form            | Meaning                                                                           |
-| --------------- | --------------------------------------------------------------------------------- |
-| `welcome`       | This connection is now active                                                     |
-| `ping`          | Sent regularly to maintain the connection - can be ignored                        |
-| `replaced`      | Another listener connected with this token                                        |
-| `export`        | A creature export file immediately follows as `data: <JSON encoded file>`         |
-| `server <hash>` | A server config file immediately follows as `data: <JSON encoded file>`           |
-| `closing`       | This connection is closing but reconnection is allowed (e.g. on a server restart) |
+| Form                 | Meaning                                                                           |
+| -------------------- | --------------------------------------------------------------------------------- |
+| `welcome`            | This connection is now active                                                     |
+| `ping`               | Sent regularly to maintain the connection - can be ignored                        |
+| `replaced`           | Another listener connected with this token                                        |
+| `export`             | A creature export file immediately follows as `data: <JSON encoded file>`         |
+| `server <hash>`      | A server config file immediately follows as `data: <JSON encoded file>`           |
+| `dead <id1> <id2>`   | Notification that the specified creature has been killed                          |
+| `neuter <id1> <id2>` | Notification that the specified creature has been neutered                        |
+| `closing`            | This connection is closing but reconnection is allowed (e.g. on a server restart) |
 
 Where data is expected (for `export` and `server` events) it will be supplied on the next line encoded as JSON and includes as `data: <JSON encoded data>`.
 
