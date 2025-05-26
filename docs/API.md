@@ -9,14 +9,15 @@ No data is stored on the server at all.
 
 Currently defined endpoints:
 
-| Method   | Path                               | Purpose                                                |
-| -------- | ---------------------------------- | ------------------------------------------------------ |
-| GET      | /api/v1/listen/[token]             | A long-running connection for ASB to listen for events |
-| PUT/POST | /api/v1/export/[token]             | Used by the mod to send export files                   |
-| PUT/POST | /api/v1/server/[token]/[hash]      | Used by the mod to send server config files            |
-| PUT/POST | /api/v1/respond/[token]/[id]       | Used by ASB to send data back to the mod               |
-| PUT/POST | /api/v1/dead/[token]/[id1]/[id2]   | Used by the mod to notify ASB of a death               |
-| PUT/POST | /api/v1/neuter/[token]/[id1]/[id2] | Used by the mod to notify ASB of a neutering           |
+| Method   | Path                                        | Purpose                                                |
+| -------- | ------------------------------------------- | ------------------------------------------------------ |
+| GET      | /api/v1/listen/[token]                      | A long-running connection for ASB to listen for events |
+| PUT/POST | /api/v1/export/[token]                      | Used by the mod to send export files                   |
+| PUT/POST | /api/v1/server/[token]/[hash]               | Used by the mod to send server config files            |
+| PUT/POST | /api/v1/respond/[token]/[id]                | Used by ASB to send data back to the mod               |
+| PUT/POST | /api/v1/dead/[token]/[id1]/[id2]            | Used by the mod to notify ASB of a death               |
+| PUT/POST | /api/v1/neuter/[token]/[id1]/[id2]          | Used by the mod to notify ASB of a neutering           |
+| PUT/POST | /api/v1/breeding/[token]/[id1]/[id2]/[1\|0] | Used by the mod to notify ASB of breeding mode changes |
 
 All endpoints are rate-limited.
 
@@ -229,16 +230,17 @@ Each message is sent as one or more lines of the form `<name>: <value>` with a f
 
 Possible event types:
 
-| Form                 | Meaning                                                                           |
-| -------------------- | --------------------------------------------------------------------------------- |
-| `welcome`            | This connection is now active                                                     |
-| `ping`               | Sent regularly to maintain the connection - can be ignored                        |
-| `replaced`           | Another listener connected with this token                                        |
-| `export`             | A creature export file immediately follows as `data: <JSON encoded file>`         |
-| `server <hash>`      | A server config file immediately follows as `data: <JSON encoded file>`           |
-| `dead <id1> <id2>`   | Notification that the specified creature has been killed                          |
-| `neuter <id1> <id2>` | Notification that the specified creature has been neutered                        |
-| `closing`            | This connection is closing but reconnection is allowed (e.g. on a server restart) |
+| Form                        | Meaning                                                                                 |
+| --------------------------- | --------------------------------------------------------------------------------------- |
+| `welcome`                   | This connection is now active                                                           |
+| `ping`                      | Sent regularly to maintain the connection - can be ignored                              |
+| `replaced`                  | Another listener connected with this token                                              |
+| `export`                    | A creature export file immediately follows as `data: <JSON encoded file>`               |
+| `server <hash>`             | A server config file immediately follows as `data: <JSON encoded file>`                 |
+| `dead <id1> <id2>`          | Notification that the specified creature has been killed                                |
+| `neuter <id1> <id2>`        | Notification that the specified creature has been neutered                              |
+| `breeding <id1> <id2> 1\|0` | Notification that the specified creature has its breeding mode turned on (1) or off (0) |
+| `closing`                   | This connection is closing but reconnection is allowed (e.g. on a server restart)       |
 
 Where data is expected (for `export` and `server` events) it will be supplied on the next line encoded as JSON and includes as `data: <JSON encoded data>`.
 
@@ -322,15 +324,23 @@ Example using curl (note: would need extra escaping for " on Windows):
 curl -H "Content-Type: application/json" --request POST --data '{"generatedName":"22 F183/28/27"}' <server>/api/v1/respond/123456/p4TRQeqJdx51
 ```
 
-### Death Notification
+### Notifications
 
 ```
-PUT/POST /api/v1/dead/[token]/[id1]/[id2]
+PUT/POST /api/v1/[death|neuter]/[token]/[id1]/[id2]
+PUT/POST /api/v1/[breeding]/[token]/[id1]/[id2]/[1|0]
 ```
 
-Allows the client mod to notify that a creature was killed. The token must have previously been given to the user by the receiver (usually ASB).
+Allows the client mod to notify about an event. The token must have previously been given to the user by the receiver (usually ASB).
 
 The `id1` and `id2` fields should be directly from the creature, including negatives and in decimal format.
+Extra parameters are specific to each notification type.
+
+| Type     | Parameters                                           |
+| -------- | ---------------------------------------------------- |
+| death    | -                                                    |
+| neuter   | -                                                    |
+| breeding | `1` for breeding enabled. `0` for breeding disabled. |
 
 #### Errors
 
@@ -360,49 +370,6 @@ content-type: application/json
 
 {
     "endpoint": "/api/v1/dead/[token]/[id1]/[id2]",
-    "service": "asb-export-server",
-    "success": true
-}
-```
-
-### Neuter Notification
-
-```
-PUT/POST /api/v1/neuter/[token]/[id1]/[id2]
-```
-
-Allows the client mod to notify that a creature was neutered. The token must have previously been given to the user by the receiver (usually ASB).
-
-The `id1` and `id2` fields should be directly from the creature, including negatives and in decimal format.
-
-#### Errors
-
-The following HTTP status codes can be generated:
-
-| Status | Name              | Meaning                                            |
-| ------ | ----------------- | -------------------------------------------------- |
-| `200`  | OK                | Export file is accepted                            |
-| `400`  | Bad Request       | Invalid token, headers or data                     |
-| `424`  | Failed Dependency | No listener is connected with this token currently |
-| `429`  | Too Many Requests | Rate limiting has denied this request              |
-| `500+` | Server Error      | Something went wrong with the server or its proxy  |
-
-#### Testing
-
-Example using HTTPie:
-
-```
-http put <server>/api/v1/neuter/a1b2c3d4/-98765/2345
-HTTP/1.1 200 OK
-Connection: keep-alive
-Date: Tue, 18 Feb 2025 22:30:53 GMT
-Keep-Alive: timeout=5
-Vary: Origin
-content-length: 94
-content-type: application/json
-
-{
-    "endpoint": "/api/v1/neuter/[token]/[id1]/[id2]",
     "service": "asb-export-server",
     "success": true
 }

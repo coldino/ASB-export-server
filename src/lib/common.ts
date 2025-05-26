@@ -66,3 +66,9 @@ export function validateIdParts(id1: string, id2: string, extra: Record<string, 
 		jsonError(400, 'Invalid ID', extra);
 	}
 }
+
+export function validateBreedingMode(mode: string, extra: Record<string, unknown>) {
+	if (mode !== '1' && mode !== '0') {
+		jsonError(400, 'Invalid breeding mode', extra);
+	}
+}
