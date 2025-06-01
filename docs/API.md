@@ -66,11 +66,11 @@ In all cases the common fields are:
 PUT/POST /api/v1/export/[token]
 ```
 
-Allows the client mod to send an export file. The token must have previously been given to the user by the receiver (usually ASB).
+Allows the client mod to send a [Dino export file](Export%20Format%20%28Dino%29.md). The token must have previously been given to the user by the receiver (usually ASB).
 
 Optionally the client can wait to see if ASB sends data in response (i.e. perhaps a newly generated creature name) by setting the `wait` query parameter to a duration in seconds. If ASB sends data back within this time it will be included in the response as the `data` field. When this parameter is not present the endpoint returns immediately.
 
-**Note:** that if a server file is required is should be sent **_before_** the export.
+**Note:** that if a [server file](Export%20Format%20%28Server%20Configuration%29.md) is required is should be sent **_before_** the export.
 
 Optional query parameters:
 
@@ -130,7 +130,7 @@ content-type: application/json
 PUT/POST /api/v1/server/[token]/[hash]
 ```
 
-Allows the client mod to send a server configuration file. The token must have previously been given to the user by the receiver (usually ASB), and the hash is the same one included in the creature export file. The JSON file must be included as the body.
+Allows the client mod to send a [server configuration file](Export%20Format%20%28Server%20Configuration%29.md). The token must have previously been given to the user by the receiver (usually ASB), and the hash is the same one included in the [creature export file](Export%20Format%20%28Dino%29.md). The JSON file must be included as the body.
 
 The request must include the following headers:
 
