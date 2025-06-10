@@ -13,6 +13,9 @@ export function validateWaitParam(url: URL, extra: Record<string, unknown>): num
 	if (isNaN(waitNum)) {
 		jsonError(400, 'Invalid wait parameter', extra);
 	}
+	if (waitNum < 1 || waitNum > 30) {
+		jsonError(400, 'Wait parameter must be between 1 and 30', extra);
+	}
 	return waitNum;
 }
 
