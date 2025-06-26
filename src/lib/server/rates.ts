@@ -7,21 +7,21 @@ async function anyLimited(limiters: RateLimiter[], event: RequestEvent) {
 }
 
 const exportRateLimiters: RateLimiter[] = [
-	new RateLimiter({ rates: { IP: [15, '15s'] } }),
-	new RateLimiter({ rates: { IP: [45, 'm'] } }),
-	new RateLimiter({ rates: { IP: [150, 'h'] } }),
+	new RateLimiter({ rates: { IP: [150, '15s'] } }),
+	new RateLimiter({ rates: { IP: [450, 'm'] } }),
+	new RateLimiter({ rates: { IP: [1500, 'h'] } }),
 ];
 
 const serverRateLimiters: RateLimiter[] = [
-	new RateLimiter({ rates: { IP: [3, '15s'] } }),
-	new RateLimiter({ rates: { IP: [10, '15m'] } }),
-	new RateLimiter({ rates: { IP: [30, 'h'] } }),
+	new RateLimiter({ rates: { IP: [30, '15s'] } }),
+	new RateLimiter({ rates: { IP: [100, '15m'] } }),
+	new RateLimiter({ rates: { IP: [300, 'h'] } }),
 ];
 
 const listenRateLimiters: RateLimiter[] = [
-	new RateLimiter({ rates: { IP: [3, '15s'] } }),
-	new RateLimiter({ rates: { IP: [10, '15m'] } }),
-	new RateLimiter({ rates: { IP: [30, 'h'] } }),
+	new RateLimiter({ rates: { IP: [30, '15s'] } }),
+	new RateLimiter({ rates: { IP: [100, '15m'] } }),
+	new RateLimiter({ rates: { IP: [300, 'h'] } }),
 ];
 
 export async function isExportLimited(event: RequestEvent) {
