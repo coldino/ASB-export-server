@@ -6,18 +6,21 @@ async function anyLimited(limiters: RateLimiter[], event: RequestEvent) {
 	return results.some((result) => result);
 }
 
+// Creature exports - frequent
 const exportRateLimiters: RateLimiter[] = [
-	new RateLimiter({ rates: { IP: [150, '15s'] } }),
-	new RateLimiter({ rates: { IP: [450, 'm'] } }),
-	new RateLimiter({ rates: { IP: [1500, 'h'] } }),
+	new RateLimiter({ rates: { IP: [500, '15s'] } }),
+	new RateLimiter({ rates: { IP: [1000, 'm'] } }),
+	new RateLimiter({ rates: { IP: [20000, 'h'] } }),
 ];
 
+// Server multiplier data - should be rare, on server config change only
 const serverRateLimiters: RateLimiter[] = [
 	new RateLimiter({ rates: { IP: [30, '15s'] } }),
 	new RateLimiter({ rates: { IP: [100, '15m'] } }),
 	new RateLimiter({ rates: { IP: [300, 'h'] } }),
 ];
 
+// ASB listen connections - only when ASB restarts or changes tokens
 const listenRateLimiters: RateLimiter[] = [
 	new RateLimiter({ rates: { IP: [30, '15s'] } }),
 	new RateLimiter({ rates: { IP: [100, '15m'] } }),
